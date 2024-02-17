@@ -1,13 +1,55 @@
 package com.phone.manager.app.repository;
 
 import com.phone.manager.app.domain.Phone;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface PhoneRepository extends JpaRepository<Phone, Long> {
+/**
+ * The {@code PhoneRepository} interface defines the contract for a repository that stores and manages {@link Phone} entities.
+ * Implementations of this interface are responsible for CRUD (Create, Read, Update, Delete) operations on entities.
+ *
+ * <p>
+ *     The repository is designed to provide a common set of methods for interacting with the underlying storage
+ *     mechanism, whether it be a relational database, a NoSQL database, or any other data store.
+ * </p>
+ *
+ * <p>
+ *     Implementing classes should provide concrete implementations for the methods declared in this interface.
+ * </p>
+ */
+public interface PhoneRepository {
 
-  Optional<Phone> findByName(String phoneName);
+  /**
+   * Saves a given phone. Use the returned instance for further operations as the save operation might have changed the
+   * phone instance completely.
+   *
+   * @param phone must not be {@literal null}.
+   * @return the saved phone; will never be {@literal null}.
+   */
+  Phone saveOrUpdate(Phone phone);
+
+//  Phone saveIfNotExist(Phone phone);
+
+  List<Phone> saveAllPhones(List<Phone> phones);
+
+  /**
+   * Returns all stored phones.
+   *
+   * @return all phones
+   */
+  List<Phone> findAll();
+
+  /**
+   * Clear all entities stored in the repository.
+   */
+  void clear();
+
+  /**
+   * Finds a {@link Phone} by its name.
+   *
+   * @param name the name of the phone
+   * @return the phone with the given name or {@literal Optional#empty()} if none found.
+   */
+  Optional<Phone> findByName(String name);
 }
