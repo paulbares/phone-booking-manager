@@ -16,6 +16,9 @@ import java.util.List;
 
 import static com.phone.manager.app.Constants.PHONE_NAMES;
 
+/**
+ * Base class that contains tests for {@link PhoneBookingService}.
+ */
 @Transactional // annotation here because visibility of the tests (private)
 abstract class APhoneBookServiceTests {
 
@@ -25,6 +28,9 @@ abstract class APhoneBookServiceTests {
 
   private PhoneBookingService service;
 
+  /**
+   * The current instant for the test.
+   */
   private Instant currentTime = NOW; // default value
 
   protected abstract PhoneRepository createPhoneRepository();
@@ -107,8 +113,8 @@ abstract class APhoneBookServiceTests {
     Assertions.assertThat(paulsPhone.getDateOfLastBooking()).isEqualTo(this.currentTime);
     Assertions.assertThat(paulsPhone.getDateOfLastReturn()).isNull();
 
-    // Change the time to make sure it is correctly recorded
     Instant lastBooking = this.currentTime;
+    // Change the time to make sure it is correctly recorded
     this.currentTime = Instant.now();
     this.service.returnPhone(PHONE_NAMES.get(5), "paul");
     paulsPhone = this.repository.findByName(PHONE_NAMES.get(5)).get();

@@ -10,6 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * A Spring oriented class with Spring annotations that delegates of calls to a n underlying {@link PhoneBookingService}
+ * that is Spring agnostic.
+ */
 public class SpringPhoneBookingService implements PhoneBookingService {
 
   /**
