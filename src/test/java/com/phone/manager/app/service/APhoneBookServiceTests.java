@@ -101,8 +101,8 @@ abstract class APhoneBookServiceTests {
 
     all = this.service.getAllPhones();
     Assertions.assertThat(all.stream().filter(p -> p.getAvailability() == Availability.YES).count()).isEqualTo(PHONE_NAMES.size() - 2);
-    Phone petersPhone = this.repository.findByName(PHONE_NAMES.get(0)).get();
-    Phone paulsPhone = this.repository.findByName(PHONE_NAMES.get(5)).get();
+    Phone petersPhone = this.service.getPhone(PHONE_NAMES.get(0));
+    Phone paulsPhone = this.service.getPhone(PHONE_NAMES.get(5));
     Assertions.assertThat(petersPhone.getAvailability()).isEqualTo(Availability.NO);
     Assertions.assertThat(petersPhone.getBorrower()).isEqualTo("peter");
     Assertions.assertThat(petersPhone.getDateOfLastBooking()).isEqualTo(NOW);
