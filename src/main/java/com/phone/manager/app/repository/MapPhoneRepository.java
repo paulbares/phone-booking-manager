@@ -13,8 +13,8 @@ public class MapPhoneRepository implements PhoneRepository {
   private final Map<String, Phone> phoneByName = new ConcurrentHashMap<>();
 
   @Override
-  public Phone saveOrUpdate(Phone phone) {
-    return this.phoneByName.computeIfAbsent(phone.getName(), __ -> phone);
+  public void saveOrUpdate(Phone phone) {
+    this.phoneByName.put(phone.getName(), phone);
   }
 
   @Override
@@ -23,13 +23,14 @@ public class MapPhoneRepository implements PhoneRepository {
   }
 
   @Override
-  public List<Phone> saveAllPhones(List<Phone> phones) {
-    return phones.stream().map(this::saveOrUpdate).toList();
+  public void saveAllPhones(List<Phone> phones) {
+    phones.forEach(this::saveOrUpdate);
   }
 
   @Override
   public Optional<Phone> findByName(String name) {
-    return Optional.ofNullable(this.phoneByName.get(name));
+    Phone p = this.phoneByName.get(name);
+    return Optional.ofNullable(p == null ? null : p.clone());
   }
 
   @Override

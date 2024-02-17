@@ -6,17 +6,20 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Spring Data repository for the {@link Phone} entity.
+ */
 @Repository
 public interface JpaPhoneRepository extends JpaRepository<Phone, Long>, PhoneRepository {
 
   @Override
-  default Phone saveOrUpdate(Phone phone) {
-    return save(phone);
+  default void saveOrUpdate(Phone phone) {
+    save(phone);
   }
 
   @Override
-  default List<Phone> saveAllPhones(List<Phone> phones) {
-    return saveAll(phones);
+  default void saveAllPhones(List<Phone> phones) {
+    saveAll(phones);
   }
 
   @Override

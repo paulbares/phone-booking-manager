@@ -5,11 +5,14 @@ import java.util.List;
 public final class Constants {
 
   /**
-   * Privta const. to make sure no one will instantiate this class.
+   * Private constructor to make sure no one will instantiate this class.
    */
   private Constants() {
   }
 
+  /**
+   * The list of phones available for testing purpose.
+   */
   public static final List<String> PHONE_NAMES = List.of("Samsung Galaxy S9",
           "2x Samsung Galaxy S8",
           "Motorola Nexus 6",

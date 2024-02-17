@@ -8,15 +8,10 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "phone")
-public class Phone {
+public class Phone implements Cloneable {
 
   @Version // for enabling optimistic locking
   private Long version;
-
-//  @Id
-//  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-//  @SequenceGenerator(name = "sequenceGenerator")
-//  private Long id;
 
   @Id
   @Column(nullable = false)
@@ -36,7 +31,7 @@ public class Phone {
   private Instant dateOfLastReturn;
 
   public Availability getAvailability() {
-    return availability;
+    return this.availability;
   }
 
   public void setAvailability(Availability availability) {
@@ -44,7 +39,7 @@ public class Phone {
   }
 
   public String getBorrower() {
-    return borrower;
+    return this.borrower;
   }
 
   public void setBorrower(String borrower) {
@@ -52,7 +47,7 @@ public class Phone {
   }
 
   public Instant getDateOfLastBooking() {
-    return dateOfLastBooking;
+    return this.dateOfLastBooking;
   }
 
   public void setDateOfLastBooking(Instant dateOfLastBooking) {
@@ -60,7 +55,7 @@ public class Phone {
   }
 
   public Instant getDateOfLastReturn() {
-    return dateOfLastReturn;
+    return this.dateOfLastReturn;
   }
 
   public void setDateOfLastReturn(Instant dateOfReturn) {
@@ -68,7 +63,7 @@ public class Phone {
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public void setName(String name) {
@@ -78,13 +73,24 @@ public class Phone {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("Phone{");
-    sb.append("version=").append(version);
-    sb.append(", availability=").append(availability);
-    sb.append(", name='").append(name).append('\'');
-    sb.append(", borrower='").append(borrower).append('\'');
-    sb.append(", dateOfBooking=").append(dateOfLastBooking);
-    sb.append(", dateOfReturn=").append(dateOfLastReturn);
+    sb.append("version=").append(this.version);
+    sb.append(", availability=").append(this.availability);
+    sb.append(", name='").append(this.name).append('\'');
+    sb.append(", borrower='").append(this.borrower).append('\'');
+    sb.append(", dateOfBooking=").append(this.dateOfLastBooking);
+    sb.append(", dateOfReturn=").append(this.dateOfLastReturn);
     sb.append('}');
     return sb.toString();
+  }
+
+  @Override
+  public Phone clone() {
+    Phone p = new Phone();
+    p.setBorrower(this.borrower);
+    p.setAvailability(this.availability);
+    p.setName(this.name);
+    p.setDateOfLastBooking(this.dateOfLastBooking);
+    p.setDateOfLastReturn(this.dateOfLastReturn);
+    return p;
   }
 }

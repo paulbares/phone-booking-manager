@@ -93,6 +93,7 @@ abstract class APhoneBookServiceTests {
     this.currentTime = Instant.now();
     this.service.bookPhone(PHONE_NAMES.get(5), "paul");
 
+    all = this.service.getAllPhones();
     Assertions.assertThat(all.stream().filter(p -> p.getAvailability() == Availability.YES).count()).isEqualTo(PHONE_NAMES.size() - 2);
     Phone petersPhone = this.repository.findByName(PHONE_NAMES.get(0)).get();
     Phone paulsPhone = this.repository.findByName(PHONE_NAMES.get(5)).get();

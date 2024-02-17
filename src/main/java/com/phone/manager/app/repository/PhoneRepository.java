@@ -25,16 +25,13 @@ public interface PhoneRepository {
    * phone instance completely.
    *
    * @param phone must not be {@literal null}.
-   * @return the saved phone; will never be {@literal null}.
    */
-  Phone saveOrUpdate(Phone phone);
+  void saveOrUpdate(Phone phone);
 
-//  Phone saveIfNotExist(Phone phone);
-
-  List<Phone> saveAllPhones(List<Phone> phones);
+  void saveAllPhones(List<Phone> phones);
 
   /**
-   * Returns all stored phones.
+   * Returns all phones stored in the repository.
    *
    * @return all phones
    */
