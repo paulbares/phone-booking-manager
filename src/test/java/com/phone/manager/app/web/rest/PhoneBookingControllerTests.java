@@ -2,13 +2,12 @@ package com.phone.manager.app.web.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.phone.manager.app.Constants;
+import com.phone.manager.app.TestUtil;
 import com.phone.manager.app.domain.Phone;
-import com.phone.manager.app.repository.MapPhoneRepository;
 import com.phone.manager.app.service.Availability;
+import com.phone.manager.app.service.MapPhoneBookingService;
 import com.phone.manager.app.service.PhoneBookingService;
-import com.phone.manager.app.service.PhoneBookingServiceImpl;
 import com.phone.manager.app.service.dto.PhoneRequestDto;
-import com.phone.manager.app.spring.SpringPhoneBookingService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +44,10 @@ class PhoneBookingControllerTests {
 
     @Bean
     @Primary
-    public PhoneBookingService phoneBookingService2() {
-      PhoneBookingServiceImpl service = new PhoneBookingServiceImpl(new MapPhoneRepository(), Instant::now);
+    public PhoneBookingService mapPhoneBookingService() {
+      MapPhoneBookingService service = new MapPhoneBookingService(Instant::now);
       service.addPhones(Constants.PHONE_NAMES);
-      return new SpringPhoneBookingService(service);
+      return service;
     }
   }
 
@@ -94,5 +93,18 @@ class PhoneBookingControllerTests {
     Phone petersPhone = this.service.getPhone(PHONE_NAMES.get(0));
     Assertions.assertThat(petersPhone.getAvailability()).isEqualTo(Availability.NO);
     Assertions.assertThat(petersPhone.getBorrower()).isEqualTo("peter");
+
+    this.mockMvc
+            .perform(
+                    post("/api/return")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(TestUtil.MAPPER.writeValueAsString(new PhoneRequestDto(Constants.PHONE_NAMES.get(0), "peter")))
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    all = this.service.getAllPhones();
+    Assertions.assertThat(all.stream().filter(p -> p.getAvailability() == Availability.YES).count()).isEqualTo(PHONE_NAMES.size());
   }
 }

@@ -40,4 +40,9 @@ public interface PhoneBookingService {
    * @param phoneNames the list of phones designated by their names to store in the {@link PhoneRepository}.
    */
   void addPhones(List<String> phoneNames);
+
+  /**
+   * Deletes all phones.
+   */
+  void clear();
 }

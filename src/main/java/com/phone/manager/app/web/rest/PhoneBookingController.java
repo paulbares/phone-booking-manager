@@ -1,6 +1,7 @@
 package com.phone.manager.app.web.rest;
 
 import com.phone.manager.app.exception.PhoneNotAvailableException;
+import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
 import com.phone.manager.app.exception.UnknownDeviceException;
 import com.phone.manager.app.service.PhoneBookingService;
 import com.phone.manager.app.service.dto.PhoneRequestDto;
@@ -34,5 +35,11 @@ public class PhoneBookingController {
   public String bookPhone(@RequestBody PhoneRequestDto dto) throws PhoneNotAvailableException, UnknownDeviceException {
     this.service.bookPhone(dto.getPhoneName(), dto.getBorrower());
     return "Phone " + dto.getPhoneName() + " is booked";
+  }
+
+  @PostMapping("/return")
+  public String returnPhone(@RequestBody PhoneRequestDto dto) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException {
+    this.service.returnPhone(dto.getPhoneName(), dto.getBorrower());
+    return "Phone " + dto.getPhoneName() + " is returned";
   }
 }

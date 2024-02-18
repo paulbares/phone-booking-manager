@@ -8,12 +8,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Instant;
+import java.util.function.Supplier;
 
 @Configuration
 public class PhoneBookingServiceConfiguration {
 
   @Bean
-  public PhoneBookingService phoneBookingService(JpaPhoneRepository repository) {
-    return new SpringPhoneBookingService(new PhoneBookingServiceImpl(repository, Instant::now));
+  public PhoneBookingService phoneBookingService(JpaPhoneRepository repository, Supplier<Instant> timeSupplier) {
+    return new SpringPhoneBookingService(new PhoneBookingServiceImpl(repository, timeSupplier));
+  }
+
+  @Bean
+  public Supplier<Instant> timeSupplier() {
+    return Instant::now;
   }
 }

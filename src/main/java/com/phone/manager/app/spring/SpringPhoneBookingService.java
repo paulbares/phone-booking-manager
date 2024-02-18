@@ -54,4 +54,10 @@ public class SpringPhoneBookingService implements PhoneBookingService {
   public void addPhones(List<String> phoneNames) {
     this.underlying.addPhones(phoneNames);
   }
+
+  @Override
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void clear() {
+    this.underlying.clear();
+  }
 }

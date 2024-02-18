@@ -5,7 +5,6 @@ import com.phone.manager.app.exception.PhoneNotAvailableException;
 import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
 import com.phone.manager.app.exception.UnknownDeviceException;
 import com.phone.manager.app.repository.PhoneRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -49,7 +48,6 @@ public class PhoneBookingServiceImpl implements PhoneBookingService {
   }
 
   @Override
-  @Transactional
   public void returnPhone(String phoneName, String borrower) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException {
     Phone phone = getPhone(phoneName);
     if (phone.getAvailability() == Availability.YES) {
@@ -80,6 +78,11 @@ public class PhoneBookingServiceImpl implements PhoneBookingService {
       return phone;
     }).toList();
     this.repository.saveAllPhones(phones);
+  }
+
+  @Override
+  public void clear() {
+    this.repository.clear();
   }
 
   @Override
