@@ -17,17 +17,10 @@ class JpaPhoneBookServiceTests extends APhoneBookServiceTests {
 
   @TestConfiguration
   static class JpaPhoneBookServiceTestConfiguration {
-
     @Bean
     public PhoneBookingService phoneBookingService(JpaPhoneRepository repository) {
       return new SpringPhoneBookingService(new PhoneBookingServiceImpl(repository, () -> currentTime));
     }
-
-//    @Bean
-//    @Primary
-//    public Supplier<Instant> timeSupplierForTest() {
-//      return () -> currentTime;
-//    }
   }
 
   @Autowired

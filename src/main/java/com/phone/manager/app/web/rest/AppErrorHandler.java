@@ -23,6 +23,6 @@ public class AppErrorHandler {
   @ExceptionHandler(value = ReturnPhoneByIncorrectBorrowerException.class)
   @ResponseBody
   public ResponseEntity<String> returnIncorrectBorrower() {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("try to return a phone not borrowed");
   }
 }

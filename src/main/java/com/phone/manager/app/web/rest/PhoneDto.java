@@ -15,6 +15,9 @@ class PhoneDto {
   private Instant dateOfLastBooking;
   private Instant dateOfLastReturn;
 
+  /**
+   * Empty constructor for jackson.
+   */
   public PhoneDto() {
   }
 

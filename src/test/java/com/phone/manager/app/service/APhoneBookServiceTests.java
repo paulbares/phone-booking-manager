@@ -31,6 +31,9 @@ abstract class APhoneBookServiceTests {
 
   private static final int NB_ITER = 50;
 
+  /**
+   * The instance created with {@link #createPhoneBookingService()}.
+   */
   protected PhoneBookingService service;
 
   /**
@@ -38,6 +41,11 @@ abstract class APhoneBookServiceTests {
    */
   protected static Instant currentTime;
 
+  /**
+   * Creates the {@link PhoneBookingService}. Sub-classes have to implement this method to test specific implementation.
+   *
+   * @return the {@link PhoneBookingService} to be tested.
+   */
   protected abstract PhoneBookingService createPhoneBookingService();
 
   @BeforeEach
