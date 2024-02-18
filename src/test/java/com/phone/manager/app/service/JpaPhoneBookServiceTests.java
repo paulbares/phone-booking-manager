@@ -1,7 +1,7 @@
 package com.phone.manager.app.service;
 
 import com.phone.manager.app.repository.JpaPhoneRepository;
-import com.phone.manager.app.spring.conf.PhoneBookingServiceConfiguration;
+import com.phone.manager.app.spring.config.PhoneBookingServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * Test class for {@link PhoneBookingService} using a {@link JpaPhoneRepository}.
  */
 @DataJpaTest
-@Import({PhoneBookingServiceConfiguration.class, JpaPhoneBookServiceTests.JpaPhoneBookServiceTestConfiguration.class})
+@Import({PhoneBookingServiceConfig.class, JpaPhoneBookServiceTests.JpaPhoneBookServiceTestConfiguration.class})
 class JpaPhoneBookServiceTests extends APhoneBookServiceTests {
 
   @TestConfiguration

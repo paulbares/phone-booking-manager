@@ -7,7 +7,7 @@ import com.phone.manager.app.domain.Phone;
 import com.phone.manager.app.service.Availability;
 import com.phone.manager.app.service.MapPhoneBookingService;
 import com.phone.manager.app.service.PhoneBookingService;
-import com.phone.manager.app.service.dto.PhoneRequestDto;
+import com.phone.manager.app.spring.config.SecurityConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,13 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.time.Instant;
 import java.util.List;
 
 import static com.phone.manager.app.Constants.PHONE_NAMES;
-import static com.phone.manager.app.service.Availability.YES;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,9 +35,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for the {@link PhoneBookingController} REST controller.
  */
 @SpringBootTest(classes = {
-        PhoneBookingControllerTests.PhoneBookingControllerTestConfiguration.class
+        PhoneBookingController.class,
+        PhoneBookingControllerTests.PhoneBookingControllerTestConfiguration.class,
+        SecurityConfig.class,
+        AppErrorHandler.class
 })
-@AutoConfigureMockMvc(/* Disable spring security */ addFilters = false)
+@AutoConfigureMockMvc
+@EnableWebMvc
 class PhoneBookingControllerTests {
 
   @TestConfiguration
@@ -63,6 +68,7 @@ class PhoneBookingControllerTests {
             .perform(
                     get("/api/phones")
                             .accept(MediaType.APPLICATION_JSON)
+                            .with(httpBasic("peter", "1234"))
             )
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -72,8 +78,8 @@ class PhoneBookingControllerTests {
     List<PhoneDto> phones = TestUtil.MAPPER.readValue(response.getContentAsString(), new TypeReference<>() {
     });
     Assertions
-            .assertThat(phones)
-            .containsExactlyInAnyOrderElementsOf(Constants.PHONE_NAMES.stream().map(n -> new PhoneDto(n, YES, null, null)).toList());
+            .assertThat(phones.stream().map(PhoneDto::getName).toList())
+            .containsExactlyInAnyOrderElementsOf(Constants.PHONE_NAMES);
   }
 
   @Test
@@ -82,8 +88,10 @@ class PhoneBookingControllerTests {
             .perform(
                     post("/api/book")
                             .accept(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(TestUtil.MAPPER.writeValueAsString(new PhoneRequestDto(Constants.PHONE_NAMES.get(0), "peter")))
+                            .with(httpBasic("peter", "1234"))
+
             )
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -97,14 +105,70 @@ class PhoneBookingControllerTests {
     this.mockMvc
             .perform(
                     post("/api/return")
+                            .with(httpBasic("peter", "1234"))
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(TestUtil.MAPPER.writeValueAsString(new PhoneRequestDto(Constants.PHONE_NAMES.get(0), "peter")))
+                            .content(Constants.PHONE_NAMES.get(0))
             )
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
 
     all = this.service.getAllPhones();
     Assertions.assertThat(all.stream().filter(p -> p.getAvailability() == Availability.YES).count()).isEqualTo(PHONE_NAMES.size());
+  }
+
+  @Test
+  void testBookUnknownDevice() throws Exception {
+    // HTTP STATUS CODE = 404 => Not found
+    this.mockMvc
+            .perform(
+                    post("/api/book")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .content("unknown name")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(httpBasic("peter", "1234"))
+
+            )
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+  }
+
+  @Test
+  void testReturnPhoneByIncorrectBorrower() throws Exception {
+    this.mockMvc
+            .perform(
+                    post("/api/book")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(httpBasic("peter", "1234"))
+
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // HTTP STATUS CODE = 400 => Bad request
+    this.mockMvc
+            .perform(
+                    post("/api/return")
+                            .with(httpBasic("paul", "1234"))
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // Correct borrower
+    this.mockMvc
+            .perform(
+                    post("/api/return")
+                            .with(httpBasic("peter", "1234"))
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
   }
 }

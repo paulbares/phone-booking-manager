@@ -1,5 +1,6 @@
-package com.phone.manager.app.spring.conf;
+package com.phone.manager.app.spring.config;
 
+import com.phone.manager.app.Constants;
 import com.phone.manager.app.repository.JpaPhoneRepository;
 import com.phone.manager.app.service.PhoneBookingService;
 import com.phone.manager.app.service.PhoneBookingServiceImpl;
@@ -11,11 +12,13 @@ import java.time.Instant;
 import java.util.function.Supplier;
 
 @Configuration
-public class PhoneBookingServiceConfiguration {
+public class PhoneBookingServiceConfig {
 
   @Bean
   public PhoneBookingService phoneBookingService(JpaPhoneRepository repository, Supplier<Instant> timeSupplier) {
-    return new SpringPhoneBookingService(new PhoneBookingServiceImpl(repository, timeSupplier));
+    SpringPhoneBookingService service = new SpringPhoneBookingService(new PhoneBookingServiceImpl(repository, timeSupplier));
+    service.addPhones(Constants.PHONE_NAMES);
+    return service;
   }
 
   @Bean
