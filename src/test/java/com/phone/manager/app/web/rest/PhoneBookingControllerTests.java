@@ -171,4 +171,44 @@ class PhoneBookingControllerTests {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
   }
+
+  @Test
+  void testBookPhoneNotAvailable() throws Exception {
+    // Peter book a phone
+    this.mockMvc
+            .perform(
+                    post("/api/book")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(httpBasic("peter", "1234"))
+
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+    // Paul tries to book the same phone
+    this.mockMvc
+            .perform(
+                    post("/api/book")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(httpBasic("paul", "1234"))
+
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // Peter return the phone
+    this.mockMvc
+            .perform(
+                    post("/api/return")
+                            .with(httpBasic("peter", "1234"))
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(Constants.PHONE_NAMES.get(0))
+            )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+  }
 }

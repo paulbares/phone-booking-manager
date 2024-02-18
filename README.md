@@ -15,7 +15,12 @@ that relies on a Spring Data JPA (Java Persistence API).
 ### Controller
 
 The class `PhoneBookingControllerTests` contains test related to the REST API. It makes sure that the rest endpoints are 
-functional and can respond to http request coming from any http client. 
+functional and can respond to http request coming from any http client. Moreover, it ensures proper HTTP status code 
+are returned to the client when a check exception is thrown (See the class `AppErrorHandler`) 
+
+The list of check exceptions is: `PhoneNotAvailableException`, `ReturnPhoneByIncorrectBorrowerException` and `UnknownDeviceException`. 
+There are mapped respectively to the following status code: `400`, `400` and `404`. A message is already returned in addition
+to the code.
 
 ## Run locally without Docker
 

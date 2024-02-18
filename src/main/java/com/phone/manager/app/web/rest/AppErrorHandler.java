@@ -1,5 +1,6 @@
 package com.phone.manager.app.web.rest;
 
+import com.phone.manager.app.exception.PhoneNotAvailableException;
 import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
 import com.phone.manager.app.exception.UnknownDeviceException;
 import org.springframework.core.annotation.Order;
@@ -24,5 +25,11 @@ public class AppErrorHandler {
   @ResponseBody
   public ResponseEntity<String> returnIncorrectBorrower() {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("try to return a phone not borrowed");
+  }
+
+  @ExceptionHandler(value = PhoneNotAvailableException.class)
+  @ResponseBody
+  public ResponseEntity<String> phoneNotAvailable() {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("phone already borrowed");
   }
 }
