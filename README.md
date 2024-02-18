@@ -37,7 +37,17 @@ Server address is: `http://localhost:8080`
 
 ## Run locally with Docker
 
-TODO
+Build the image on your computer, execute the following command in the root directory of the project. Name of the image is: `phone-booking-app`
+```
+docker build -t phone-booking-app -f Dockerfile .
+```
+
+Run it in a container, it will start automatically the server. Port 8080 of host is mapped to 8080 of container.
+```
+docker run -it -p 8080:8080 --name phone-booking-app phone-booking-app
+```
+
+You can consume the REST API via host. See CURL section below. 
 
 ## CURL 
 
