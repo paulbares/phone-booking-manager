@@ -1,16 +1,22 @@
 package com.phone.manager.app.service;
 
+import com.phone.manager.app.domain.Availability;
 import com.phone.manager.app.domain.Phone;
 import com.phone.manager.app.exception.PhoneNotAvailableException;
 import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
 import com.phone.manager.app.exception.UnknownDeviceException;
 import com.phone.manager.app.repository.PhoneRepository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class PhoneBookingServiceImpl implements PhoneBookingService {
+/**
+ * Implementation of {@link PhoneBookingService} that manages the {@link Phone} entities with a {@link PhoneRepository}.
+ */
+public class JpaPhoneBookingService implements PhoneBookingService {
 
   /**
    * Repository containing the phones.
@@ -25,12 +31,13 @@ public class PhoneBookingServiceImpl implements PhoneBookingService {
   /**
    * Constructor.
    */
-  public PhoneBookingServiceImpl(PhoneRepository repository, Supplier<Instant> timeSupplier) {
+  public JpaPhoneBookingService(PhoneRepository repository, Supplier<Instant> timeSupplier) {
     this.repository = repository;
     this.timeSupplier = timeSupplier;
   }
 
   @Override
+  @Transactional
   public void bookPhone(String phoneName, String borrower) throws PhoneNotAvailableException, UnknownDeviceException {
     Phone phone = getPhone(phoneName);
     if (phone.getAvailability() == Availability.NO) {
@@ -44,10 +51,11 @@ public class PhoneBookingServiceImpl implements PhoneBookingService {
     phone.setBorrower(borrower);
     phone.setAvailability(Availability.NO);
     phone.setDateOfLastBooking(this.timeSupplier.get());
-    this.repository.saveOrUpdate(phone);
+    this.repository.save(phone);
   }
 
   @Override
+  @Transactional
   public void returnPhone(String phoneName, String borrower) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException {
     Phone phone = getPhone(phoneName);
     if (phone.getAvailability() == Availability.YES) {
@@ -61,15 +69,17 @@ public class PhoneBookingServiceImpl implements PhoneBookingService {
     phone.setAvailability(Availability.YES);
     phone.setBorrower(null);
     phone.setDateOfLastReturn(this.timeSupplier.get());
-    this.repository.saveOrUpdate(phone);
+    this.repository.save(phone);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Phone getPhone(String name) throws UnknownDeviceException {
     return this.repository.findByName(name).orElseThrow(() -> new UnknownDeviceException(String.format("The phone with name %s does not exist", name)));
   }
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void addPhones(List<String> phoneNames) {
     List<Phone> phones = phoneNames.stream().map(name -> {
       Phone phone = new Phone();
@@ -77,15 +87,17 @@ public class PhoneBookingServiceImpl implements PhoneBookingService {
       phone.setName(name);
       return phone;
     }).toList();
-    this.repository.saveAllPhones(phones);
+    this.repository.saveAll(phones);
   }
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void clear() {
-    this.repository.clear();
+    this.repository.deleteAll();
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<Phone> getAllPhones() {
     return this.repository.findAll();
   }

@@ -1,5 +1,6 @@
 package com.phone.manager.app.service;
 
+import com.phone.manager.app.domain.Availability;
 import com.phone.manager.app.domain.Phone;
 import com.phone.manager.app.exception.PhoneNotAvailableException;
 import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;

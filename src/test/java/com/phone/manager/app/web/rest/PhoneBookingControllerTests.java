@@ -2,9 +2,8 @@ package com.phone.manager.app.web.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.phone.manager.app.Constants;
-import com.phone.manager.app.TestUtil;
+import com.phone.manager.app.domain.Availability;
 import com.phone.manager.app.domain.Phone;
-import com.phone.manager.app.service.Availability;
 import com.phone.manager.app.service.MapPhoneBookingService;
 import com.phone.manager.app.service.PhoneBookingService;
 import com.phone.manager.app.spring.config.SecurityConfig;
@@ -25,6 +24,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static com.phone.manager.app.Constants.PHONE_NAMES;
+import static com.phone.manager.app.TestUtil.MAPPER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -75,7 +75,7 @@ class PhoneBookingControllerTests {
             .andReturn()
             .getResponse();
 
-    List<PhoneDto> phones = TestUtil.MAPPER.readValue(response.getContentAsString(), new TypeReference<>() {
+    List<PhoneDto> phones = MAPPER.readValue(response.getContentAsString(), new TypeReference<>() {
     });
     Assertions
             .assertThat(phones.stream().map(PhoneDto::getName).toList())

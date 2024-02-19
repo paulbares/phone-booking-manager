@@ -4,7 +4,6 @@ import com.phone.manager.app.exception.PhoneNotAvailableException;
 import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
 import com.phone.manager.app.exception.UnknownDeviceException;
 import com.phone.manager.app.service.PhoneBookingService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -26,11 +25,11 @@ public class PhoneBookingController {
    * @return the current user.
    */
   @GetMapping("/phones")
-  public ResponseEntity<List<PhoneDto>> getAllPhones() {
+  public List<PhoneDto> getAllPhones() {
     List<PhoneDto> phones = this.service.getAllPhones()
             .stream()
             .map(p -> new PhoneDto(p.getName(), p.getAvailability(), p.getDateOfLastBooking(), p.getDateOfLastReturn())).toList();
-    return ResponseEntity.ok(phones);
+    return phones;
   }
 
   @PostMapping("/book")

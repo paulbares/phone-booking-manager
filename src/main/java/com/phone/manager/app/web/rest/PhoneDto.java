@@ -1,6 +1,6 @@
 package com.phone.manager.app.web.rest;
 
-import com.phone.manager.app.service.Availability;
+import com.phone.manager.app.domain.Availability;
 
 import java.time.Instant;
 import java.util.Objects;

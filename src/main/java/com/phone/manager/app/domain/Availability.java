@@ -1,4 +1,4 @@
-package com.phone.manager.app.service;
+package com.phone.manager.app.domain;
 
 /**
  * An enum of all availability states a phone can be.

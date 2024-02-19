@@ -7,7 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.hibernate.StaleObjectStateException;
 
 /**
- * Utility class for testing REST controllers.
+ * Utility class for testing.
  */
 public final class TestUtil {
 

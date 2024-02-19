@@ -1,6 +1,5 @@
 package com.phone.manager.app.domain;
 
-import com.phone.manager.app.service.Availability;
 import jakarta.persistence.*;
 
 import java.time.Instant;
