@@ -1,4 +1,4 @@
-# Phone Booking App
+# :phone: Phone Booking App
 
 The interface `PhoneBookService` describes the contract for storing and managing phone entities. Two implementations are 
 available: `MapPhoneBookingService` and `JpaPhoneBookingService` with their pros and cons. Those points are detailed below.
