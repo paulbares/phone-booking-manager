@@ -1,0 +1,218 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JpaPhoneBookingService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.phone.manager.app.service</a>
+</div>
+
+<h1>Coverage Summary for Class: JpaPhoneBookingService (com.phone.manager.app.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JpaPhoneBookingService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/29)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JpaPhoneBookingService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/29)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.phone.manager.app.service;
+&nbsp;
+&nbsp;import com.phone.manager.app.domain.Availability;
+&nbsp;import com.phone.manager.app.domain.Phone;
+&nbsp;import com.phone.manager.app.exception.PhoneNotAvailableException;
+&nbsp;import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
+&nbsp;import com.phone.manager.app.exception.UnknownDeviceException;
+&nbsp;import com.phone.manager.app.repository.PhoneRepository;
+&nbsp;import org.springframework.transaction.annotation.Propagation;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.time.Instant;
+&nbsp;import java.util.List;
+&nbsp;import java.util.function.Supplier;
+&nbsp;
+&nbsp;/**
+&nbsp; * Implementation of {@link PhoneBookingService} that manages the {@link Phone} entities with a {@link PhoneRepository}.
+&nbsp; */
+&nbsp;public class JpaPhoneBookingService implements PhoneBookingService {
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Repository containing the phones.
+&nbsp;   */
+&nbsp;  private final PhoneRepository repository;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Object that can give the current time. It is particularly useful for testing purpose.
+&nbsp;   */
+&nbsp;  private final Supplier&lt;Instant&gt; timeSupplier;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Constructor.
+&nbsp;   */
+<b class="fc">&nbsp;  public JpaPhoneBookingService(PhoneRepository repository, Supplier&lt;Instant&gt; timeSupplier) {</b>
+<b class="fc">&nbsp;    this.repository = repository;</b>
+<b class="fc">&nbsp;    this.timeSupplier = timeSupplier;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional
+&nbsp;  public void bookPhone(String phoneName, String borrower) throws PhoneNotAvailableException, UnknownDeviceException {
+<b class="fc">&nbsp;    Phone phone = getPhone(phoneName);</b>
+<b class="fc">&nbsp;    if (phone.getAvailability() == Availability.NO) {</b>
+<b class="fc">&nbsp;      if (!phone.getBorrower().equals(borrower)) {</b>
+<b class="fc">&nbsp;        throw new PhoneNotAvailableException(String.format(&quot;The phone %s is not available&quot;, phoneName));</b>
+&nbsp;      } else {
+&nbsp;        return; // function is idempotent
+&nbsp;      }
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    phone.setBorrower(borrower);</b>
+<b class="fc">&nbsp;    phone.setAvailability(Availability.NO);</b>
+<b class="fc">&nbsp;    phone.setDateOfLastBooking(this.timeSupplier.get());</b>
+<b class="fc">&nbsp;    this.repository.save(phone);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional
+&nbsp;  public void returnPhone(String phoneName, String borrower) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException {
+<b class="fc">&nbsp;    Phone phone = getPhone(phoneName);</b>
+<b class="fc">&nbsp;    if (phone.getAvailability() == Availability.YES) {</b>
+&nbsp;      return; // Phone is already available, nothing to do
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    if (!phone.getBorrower().equals(borrower)) {</b>
+<b class="fc">&nbsp;      throw new ReturnPhoneByIncorrectBorrowerException(String.format(&quot;The phone %s was not booked by %s&quot;, phoneName, borrower));</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    phone.setAvailability(Availability.YES);</b>
+<b class="fc">&nbsp;    phone.setBorrower(null);</b>
+<b class="fc">&nbsp;    phone.setDateOfLastReturn(this.timeSupplier.get());</b>
+<b class="fc">&nbsp;    this.repository.save(phone);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional(readOnly = true)
+&nbsp;  public Phone getPhone(String name) throws UnknownDeviceException {
+<b class="fc">&nbsp;    return this.repository.findByName(name).orElseThrow(() -&gt; new UnknownDeviceException(String.format(&quot;The phone with name %s does not exist&quot;, name)));</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional(propagation = Propagation.REQUIRES_NEW)
+&nbsp;  public void addPhones(List&lt;String&gt; phoneNames) {
+<b class="fc">&nbsp;    List&lt;Phone&gt; phones = phoneNames.stream().map(name -&gt; {</b>
+<b class="fc">&nbsp;      Phone phone = new Phone();</b>
+<b class="fc">&nbsp;      phone.setAvailability(Availability.YES);</b>
+<b class="fc">&nbsp;      phone.setName(name);</b>
+<b class="fc">&nbsp;      return phone;</b>
+<b class="fc">&nbsp;    }).toList();</b>
+<b class="fc">&nbsp;    this.repository.saveAll(phones);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional(propagation = Propagation.REQUIRES_NEW)
+&nbsp;  public void clear() {
+<b class="fc">&nbsp;    this.repository.deleteAll();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional(readOnly = true)
+&nbsp;  public List&lt;Phone&gt; getAllPhones() {
+<b class="fc">&nbsp;    return this.repository.findAll();</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-19 12:18</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MapPhoneBookingService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.phone.manager.app.service</a>
+</div>
+
+<h1>Coverage Summary for Class: MapPhoneBookingService (com.phone.manager.app.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MapPhoneBookingService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (48/48)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.phone.manager.app.service;
+&nbsp;
+&nbsp;import com.phone.manager.app.domain.Availability;
+&nbsp;import com.phone.manager.app.domain.Phone;
+&nbsp;import com.phone.manager.app.exception.PhoneNotAvailableException;
+&nbsp;import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
+&nbsp;import com.phone.manager.app.exception.UnknownDeviceException;
+&nbsp;
+&nbsp;import java.time.Instant;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.concurrent.ConcurrentHashMap;
+&nbsp;import java.util.function.Supplier;
+&nbsp;
+&nbsp;/**
+&nbsp; * A very simple in-memory implementation of {@link PhoneBookingService} backed by a {@link ConcurrentHashMap}.
+&nbsp; */
+&nbsp;public class MapPhoneBookingService implements PhoneBookingService {
+&nbsp;
+&nbsp;  private final Map&lt;String, Phone&gt; phoneByName;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Object that can give the current time. It is particularly useful for testing purpose.
+&nbsp;   */
+&nbsp;  private final Supplier&lt;Instant&gt; timeSupplier;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Constructor.
+&nbsp;   */
+<b class="fc">&nbsp;  public MapPhoneBookingService(Supplier&lt;Instant&gt; timeSupplier) {</b>
+<b class="fc">&nbsp;    this.phoneByName = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    this.timeSupplier = timeSupplier;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void bookPhone(String phoneName, String borrower) throws PhoneNotAvailableException, UnknownDeviceException {
+<b class="fc">&nbsp;    Exception[] ex = new Exception[1];</b>
+<b class="fc">&nbsp;    this.phoneByName.compute(phoneName, (name, phone) -&gt; {</b>
+<b class="fc">&nbsp;      if (phone == null) {</b>
+<b class="fc">&nbsp;        ex[0] = new UnknownDeviceException(String.format(&quot;The phone with name %s does not exist&quot;, name));</b>
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      if (phone.getAvailability() == Availability.NO) {</b>
+<b class="fc">&nbsp;        if (!phone.getBorrower().equals(borrower)) {</b>
+<b class="fc">&nbsp;          ex[0] = new PhoneNotAvailableException(String.format(&quot;The phone %s is not available&quot;, phoneName));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return phone; // function is idempotent</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      phone.setBorrower(borrower);</b>
+<b class="fc">&nbsp;      phone.setAvailability(Availability.NO);</b>
+<b class="fc">&nbsp;      phone.setDateOfLastBooking(this.timeSupplier.get());</b>
+<b class="fc">&nbsp;      return phone;</b>
+&nbsp;    });
+&nbsp;
+<b class="fc">&nbsp;    if (ex[0] instanceof PhoneNotAvailableException pnae) {</b>
+<b class="fc">&nbsp;      throw pnae;</b>
+<b class="fc">&nbsp;    } else if (ex[0] instanceof UnknownDeviceException ude) {</b>
+<b class="fc">&nbsp;      throw ude;</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void returnPhone(String phoneName, String borrower) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException {
+<b class="fc">&nbsp;    Exception[] ex = new Exception[1];</b>
+<b class="fc">&nbsp;    this.phoneByName.compute(phoneName, (name, phone) -&gt; {</b>
+<b class="fc">&nbsp;      if (phone == null) {</b>
+<b class="fc">&nbsp;        ex[0] = new UnknownDeviceException(String.format(&quot;The phone with name %s does not exist&quot;, name));</b>
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      if (phone.getAvailability() == Availability.YES) {</b>
+<b class="fc">&nbsp;        return phone; // Phone is already available, nothing to do. Function is idempotent</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      if (!phone.getBorrower().equals(borrower)) {</b>
+<b class="fc">&nbsp;        ex[0] = new ReturnPhoneByIncorrectBorrowerException(String.format(&quot;The phone %s was not booked by %s&quot;, phoneName, borrower));</b>
+&nbsp;      } else {
+<b class="fc">&nbsp;        phone.setAvailability(Availability.YES);</b>
+<b class="fc">&nbsp;        phone.setBorrower(null);</b>
+<b class="fc">&nbsp;        phone.setDateOfLastReturn(this.timeSupplier.get());</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      return phone;</b>
+&nbsp;    });
+&nbsp;
+<b class="fc">&nbsp;    if (ex[0] instanceof ReturnPhoneByIncorrectBorrowerException e) {</b>
+<b class="fc">&nbsp;      throw e;</b>
+<b class="fc">&nbsp;    } else if (ex[0] instanceof UnknownDeviceException e) {</b>
+<b class="fc">&nbsp;      throw e;</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public Phone getPhone(String name) throws UnknownDeviceException {
+<b class="fc">&nbsp;    Phone p = this.phoneByName.get(name);</b>
+<b class="fc">&nbsp;    if (p == null) {</b>
+<b class="fc">&nbsp;      throw new UnknownDeviceException(String.format(&quot;The phone with name %s does not exist&quot;, name));</b>
+&nbsp;    }
+<b class="fc">&nbsp;    return p;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void addPhones(List&lt;String&gt; phoneNames) {
+<b class="fc">&nbsp;    phoneNames.forEach(name -&gt; {</b>
+<b class="fc">&nbsp;      Phone phone = new Phone();</b>
+<b class="fc">&nbsp;      phone.setAvailability(Availability.YES);</b>
+<b class="fc">&nbsp;      phone.setName(name);</b>
+<b class="fc">&nbsp;      this.phoneByName.put(name, phone);</b>
+&nbsp;    });
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public List&lt;Phone&gt; getAllPhones() {
+<b class="fc">&nbsp;    return new ArrayList&lt;&gt;(this.phoneByName.values());</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void clear() {
+<b class="fc">&nbsp;    this.phoneByName.clear();</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-19 12:18</div>
+</div>
+</body>
+</html>

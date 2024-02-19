@@ -52,6 +52,12 @@ The list of check exceptions is: `PhoneNotAvailableException`, `ReturnPhoneByInc
 There are mapped respectively to the following status code: `400`, `400` and `404`. A message is already returned in addition
 to the code.
 
+## Coverage
+
+Please find a code coverage overview and the full html report [here](https://paulbares.github.io/phone-booking-manager).
+
+![coverage](documentation/assets/coverage.png)
+
 ## Run locally without Docker
 
 ### Prerequisites

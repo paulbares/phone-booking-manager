@@ -62,6 +62,11 @@ abstract class APhoneBookServiceTests {
   }
 
   @Test
+  void testGetUnknownPhone() {
+    Assertions.assertThatThrownBy(() -> this.service.getPhone("unknown")).isInstanceOf(UnknownDeviceException.class);
+  }
+
+  @Test
   void testBookUnknownPhone() {
     Assertions.assertThatThrownBy(() -> this.service.bookPhone("unknown", "peter")).isInstanceOf(UnknownDeviceException.class);
   }

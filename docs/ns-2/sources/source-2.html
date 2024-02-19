@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Phone</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.phone.manager.app.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Phone (com.phone.manager.app.domain)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Phone</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Phone$HibernateInstantiator$6IlW1Ykr</td>
+  </tr>
+  <tr>
+    <td class="name">Phone$HibernateProxy$eJ8v5XuM</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.phone.manager.app.domain;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.time.Instant;
+&nbsp;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;phone&quot;)
+<b class="fc">&nbsp;public class Phone {</b>
+&nbsp;
+&nbsp;  @Version // for enabling optimistic locking
+&nbsp;  private Long version;
+&nbsp;
+&nbsp;  @Id
+&nbsp;  @Column(nullable = false)
+&nbsp;  private String name;
+&nbsp;
+&nbsp;  @Enumerated(EnumType.STRING)
+&nbsp;  @Column(nullable = false)
+&nbsp;  private Availability availability;
+&nbsp;
+&nbsp;  @Column
+&nbsp;  private String borrower;
+&nbsp;
+&nbsp;  @Column(name = &quot;date_of_last_booking&quot;)
+&nbsp;  private Instant dateOfLastBooking;
+&nbsp;
+&nbsp;  @Column(name = &quot;date_of_last_return&quot;)
+&nbsp;  private Instant dateOfLastReturn;
+&nbsp;
+&nbsp;  public Availability getAvailability() {
+<b class="fc">&nbsp;    return this.availability;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setAvailability(Availability availability) {
+<b class="fc">&nbsp;    this.availability = availability;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public String getBorrower() {
+<b class="fc">&nbsp;    return this.borrower;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setBorrower(String borrower) {
+<b class="fc">&nbsp;    this.borrower = borrower;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public Instant getDateOfLastBooking() {
+<b class="fc">&nbsp;    return this.dateOfLastBooking;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setDateOfLastBooking(Instant dateOfLastBooking) {
+<b class="fc">&nbsp;    this.dateOfLastBooking = dateOfLastBooking;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public Instant getDateOfLastReturn() {
+<b class="fc">&nbsp;    return this.dateOfLastReturn;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setDateOfLastReturn(Instant dateOfReturn) {
+<b class="fc">&nbsp;    this.dateOfLastReturn = dateOfReturn;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public String getName() {
+<b class="fc">&nbsp;    return this.name;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setName(String name) {
+<b class="fc">&nbsp;    this.name = name;</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-19 12:18</div>
+</div>
+</body>
+</html>

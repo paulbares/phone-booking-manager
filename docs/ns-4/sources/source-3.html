@@ -1,0 +1,142 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PhoneBookingService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.phone.manager.app.service</a>
+</div>
+
+<h1>Coverage Summary for Class: PhoneBookingService (com.phone.manager.app.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PhoneBookingService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.phone.manager.app.service;
+&nbsp;
+&nbsp;import com.phone.manager.app.domain.Availability;
+&nbsp;import com.phone.manager.app.domain.Phone;
+&nbsp;import com.phone.manager.app.exception.PhoneNotAvailableException;
+&nbsp;import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
+&nbsp;import com.phone.manager.app.exception.UnknownDeviceException;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * The {@code PhoneBookingService} interface defines the contract for storing and managing {@link Phone} entities.
+&nbsp; * &lt;p&gt;
+&nbsp; * The interface is designed to provide a common set of methods for interacting with an underlying storage
+&nbsp; * mechanism, whether it be a relational database, a NoSQL database, or any other data store or data structure.
+&nbsp; * &lt;/p&gt;
+&nbsp; */
+&nbsp;public interface PhoneBookingService {
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Books a phone with the given name of the given borrower. Only one user at a time can book a phone. Calling this
+&nbsp;   * method multiple times with the same parameters should not have any side effect i.e. it should be idempotent.
+&nbsp;   *
+&nbsp;   * @param phoneName the name of the phone
+&nbsp;   * @param borrower  the name of the user that wants to borrow the phone
+&nbsp;   * @throws UnknownDeviceException     if the phone does not exist
+&nbsp;   * @throws PhoneNotAvailableException if the phone is not available i.e. already borrowed by another user
+&nbsp;   */
+&nbsp;  void bookPhone(String phoneName, String borrower) throws PhoneNotAvailableException, UnknownDeviceException;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Returns the phone with the given name that was previously borrowed by the given user. Calling this method multiple
+&nbsp;   * times with the same parameters should not have any side effect i.e. it should be idempotent.
+&nbsp;   *
+&nbsp;   * @param phoneName the name of the phone
+&nbsp;   * @param borrower  the name of the user that wants to return the phone
+&nbsp;   * @throws UnknownDeviceException                  if the phone does not exist
+&nbsp;   * @throws ReturnPhoneByIncorrectBorrowerException if the phone is borrowed by the user trying to return it is not
+&nbsp;   *                                                 the one that borrowed it
+&nbsp;   */
+&nbsp;  void returnPhone(String phoneName, String borrower) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves a {@link Phone} entity by its name.
+&nbsp;   *
+&nbsp;   * @param name the name of the phone.
+&nbsp;   * @return the {@link Phone} entity with the given name.
+&nbsp;   * @throws UnknownDeviceException if there is no phone with this name.
+&nbsp;   */
+&nbsp;  Phone getPhone(String name) throws UnknownDeviceException;
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Retrieves all phones.
+&nbsp;   * &lt;p&gt;
+&nbsp;   * The list contains both phones that are available ({@link Phone#getAvailability()} == {@link Availability#YES})
+&nbsp;   * or not ({@link Phone#getAvailability()} == {@link Availability#NO}).
+&nbsp;   * &lt;/p&gt;
+&nbsp;   *
+&nbsp;   * @return the phones.
+&nbsp;   */
+&nbsp;  List&lt;Phone&gt; getAllPhones();
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Adds new phones available afterward.
+&nbsp;   *
+&nbsp;   * @param phoneNames the list of phones designated by their names.
+&nbsp;   */
+&nbsp;  void addPhones(List&lt;String&gt; phoneNames);
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Deletes all phones.
+&nbsp;   */
+&nbsp;  void clear();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-19 12:18</div>
+</div>
+</body>
+</html>

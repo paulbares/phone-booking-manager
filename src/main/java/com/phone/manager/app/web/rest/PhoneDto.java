@@ -3,12 +3,11 @@ package com.phone.manager.app.web.rest;
 import com.phone.manager.app.domain.Availability;
 
 import java.time.Instant;
-import java.util.Objects;
 
 /**
  * DTO of {@link com.phone.manager.app.domain.Phone} entity. We do not expose the borrower for security reason.
  */
-class PhoneDto {
+public class PhoneDto {
 
   private String name;
   private Availability availability;
@@ -58,18 +57,5 @@ class PhoneDto {
 
   public void setDateOfLastReturn(Instant dateOfLastReturn) {
     this.dateOfLastReturn = dateOfLastReturn;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    PhoneDto phoneDto = (PhoneDto) o;
-    return Objects.equals(this.name, phoneDto.name) && this.availability == phoneDto.availability && Objects.equals(this.dateOfLastBooking, phoneDto.dateOfLastBooking) && Objects.equals(this.dateOfLastReturn, phoneDto.dateOfLastReturn);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.name, this.availability, this.dateOfLastBooking, this.dateOfLastReturn);
   }
 }

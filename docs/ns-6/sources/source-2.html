@@ -1,0 +1,150 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PhoneBookingController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.phone.manager.app.web.rest</a>
+</div>
+
+<h1>Coverage Summary for Class: PhoneBookingController (com.phone.manager.app.web.rest)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PhoneBookingController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.phone.manager.app.web.rest;
+&nbsp;
+&nbsp;import com.phone.manager.app.exception.PhoneNotAvailableException;
+&nbsp;import com.phone.manager.app.exception.ReturnPhoneByIncorrectBorrowerException;
+&nbsp;import com.phone.manager.app.exception.UnknownDeviceException;
+&nbsp;import com.phone.manager.app.service.PhoneBookingService;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.security.Principal;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/api&quot;)
+&nbsp;public class PhoneBookingController {
+&nbsp;
+&nbsp;  private final PhoneBookingService service;
+&nbsp;
+<b class="fc">&nbsp;  public PhoneBookingController(PhoneBookingService service) {</b>
+<b class="fc">&nbsp;    this.service = service;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * {@code GET  /account} : get the current user.
+&nbsp;   *
+&nbsp;   * @return the current user.
+&nbsp;   */
+&nbsp;  @GetMapping(&quot;/phones&quot;)
+&nbsp;  public List&lt;PhoneDto&gt; getAllPhones() {
+<b class="fc">&nbsp;    List&lt;PhoneDto&gt; phones = this.service.getAllPhones()</b>
+<b class="fc">&nbsp;            .stream()</b>
+<b class="fc">&nbsp;            .map(p -&gt; new PhoneDto(p.getName(), p.getAvailability(), p.getDateOfLastBooking(), p.getDateOfLastReturn())).toList();</b>
+<b class="fc">&nbsp;    return phones;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @PostMapping(&quot;/book&quot;)
+&nbsp;  public String bookPhone(@RequestBody String name, Principal principal) throws PhoneNotAvailableException, UnknownDeviceException {
+<b class="fc">&nbsp;    this.service.bookPhone(name, principal.getName());</b>
+<b class="fc">&nbsp;    return &quot;Phone &quot; + name + &quot; is booked&quot;;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @PostMapping(&quot;/return&quot;)
+&nbsp;  public String returnPhone(@RequestBody String name, Principal principal) throws UnknownDeviceException, ReturnPhoneByIncorrectBorrowerException {
+<b class="fc">&nbsp;    this.service.returnPhone(name, principal.getName());</b>
+<b class="fc">&nbsp;    return &quot;Phone &quot; + name + &quot; is returned&quot;;</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-19 12:18</div>
+</div>
+</body>
+</html>
