@@ -49,10 +49,15 @@ public class MapPhoneBookingService implements PhoneBookingService {
         return phone; // function is idempotent
       }
 
-      phone.setBorrower(borrower);
-      phone.setAvailability(Availability.NO);
-      phone.setDateOfLastBooking(this.timeSupplier.get());
-      return phone;
+      // Create a new instance to provide a consistent view of the phone in case someone is trying to see the list
+      // of available phones at the same time.
+      Phone newPhone = new Phone();
+      newPhone.setName(phone.getName());
+      newPhone.setBorrower(borrower);
+      newPhone.setAvailability(Availability.NO);
+      newPhone.setDateOfLastBooking(this.timeSupplier.get());
+      newPhone.setDateOfLastReturn(phone.getDateOfLastReturn());
+      return newPhone;
     });
 
     if (ex[0] instanceof PhoneNotAvailableException pnae) {
@@ -77,13 +82,18 @@ public class MapPhoneBookingService implements PhoneBookingService {
 
       if (!phone.getBorrower().equals(borrower)) {
         ex[0] = new ReturnPhoneByIncorrectBorrowerException(String.format("The phone %s was not booked by %s", phoneName, borrower));
+        return phone;
       } else {
-        phone.setAvailability(Availability.YES);
-        phone.setBorrower(null);
-        phone.setDateOfLastReturn(this.timeSupplier.get());
+        // Create a new instance to provide a consistent view of the phone in case someone is trying to see the list
+        // of available phones at the same time.
+        Phone newPhone = new Phone();
+        newPhone.setName(phone.getName());
+        newPhone.setAvailability(Availability.YES);
+        newPhone.setBorrower(null);
+        newPhone.setDateOfLastReturn(this.timeSupplier.get());
+        newPhone.setDateOfLastBooking(phone.getDateOfLastBooking());
+        return newPhone;
       }
-
-      return phone;
     });
 
     if (ex[0] instanceof ReturnPhoneByIncorrectBorrowerException e) {
