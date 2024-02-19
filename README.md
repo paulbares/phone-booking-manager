@@ -1,14 +1,44 @@
 # Phone Booking App
 
-The project is setup with [maven](http://maven.apache.org/). 
+The interface `PhoneBookService` describes the contract for storing and managing phone entities. Two implementations are 
+available: `MapPhoneBookingService` and `JpaPhoneBookingService` with their pros and cons. Those points are detailed below.
 
-## Tests
+The project is a SpringBoot application using Spring Data JPA to provide an implementation of `PhoneBookService` that relies 
+on database as storage mechanism, whether it be a relational database or a NoSQL database. In the present case and by convenience,
+H2 database is used, but it would be easy to replace it with a production-ready database. 
 
-Tests can be found in `src/test/java`. There are 4 main classes to look at.
+Before going into details, please find a UML diagram of the main classes of this project.
+
+<img width="800" src="documentation/assets/uml.png">
+
+## MapPhoneBookingService
+
+A very simple in-memory implementation of `PhoneBookingService` backed by a `ConcurrentHashMap`.
+
+- **Pros**: simple (easy to debug and test), lightweight (no external dependency needed, it's provided by the JDK !),
+thread safeness without any effort and while avoiding contention, fast (in-memory), easy to deploy
+- **Cons**: **not scalable** as only one instance of the application could be deployed. If the service is restarted, stored
+information is lost (in-memory)
+
+## JpaPhoneBookingService
+
+Implementation of `PhoneBookingService` that manages the phone entities via Spring Data JPA Repository. The usage of an 
+underlying database and Spring Data JPA framework present several advantages.
+
+- **Pros**: storage is persistent, underlying DB can be easily changed, often-needed options such as pagination and auditing
+easily accessible, **scalable** because storage and application are decoupled. Usage of optimistic lock via the database, 
+which Spring JPA offers with very little effort, prevents concurrent requests to be executed on the same data (e.g. booking same phone
+at the same time by multiple users)
+- **Cons**: external dependencies are needed, slower than `MapPhoneBookingService` because of DB queries, deployment, debug,
+auditing and testing is more complex
+
+## Testing
+
+Tests can be found in `src/test/java`. Run `mvn test` to run them. There are 4 main classes to look at.
 
 ### Service 
 
-`APhoneBookServiceTests` is an abstract class that defines all the tests to be run with all different implementations of
+`APhoneBookServiceTests` is an abstract class that defines all tests to be run with all different implementations of
 `PhoneBookService`. `JpaPhoneBookServiceTests` extends `APhoneBookServiceTests` and uses an implementation of `PhoneBookService`
 that relies on a Spring Data JPA (Java Persistence API).
 
