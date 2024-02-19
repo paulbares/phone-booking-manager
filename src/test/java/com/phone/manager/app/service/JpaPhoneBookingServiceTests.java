@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Import;
  * Test class for the {@link JpaPhoneBookingService} implementation of {@link PhoneBookingService}.
  */
 @DataJpaTest
-@Import(JpaPhoneBookServiceTests.JpaPhoneBookServiceTestConfiguration.class)
-class JpaPhoneBookServiceTests extends APhoneBookServiceTests {
+@Import(JpaPhoneBookingServiceTests.APhoneBookingServiceTestConfiguration.class)
+class JpaPhoneBookingServiceTests extends APhoneBookingServiceTests {
 
   @TestConfiguration
-  static class JpaPhoneBookServiceTestConfiguration {
+  static class APhoneBookingServiceTestConfiguration {
     @Bean
     public PhoneBookingService phoneBookingService(PhoneRepository repository) {
       return new JpaPhoneBookingService(repository, () -> currentTime);

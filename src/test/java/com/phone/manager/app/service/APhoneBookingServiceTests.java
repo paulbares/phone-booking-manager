@@ -26,7 +26,7 @@ import static com.phone.manager.app.TestUtil.getRootCause;
 /**
  * Base class that contains tests for {@link PhoneBookingService}.
  */
-abstract class APhoneBookServiceTests {
+abstract class APhoneBookingServiceTests {
 
   private static final Instant NOW = Instant.now();
 

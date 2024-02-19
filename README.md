@@ -5,18 +5,18 @@ available: `MapPhoneBookingService` and `JpaPhoneBookingService` with their pros
 
 The project is a SpringBoot application using Spring Data JPA to provide an implementation of `PhoneBookService` that relies 
 on database as storage mechanism, whether it be a relational database or a NoSQL database. In the present case and by convenience,
-H2 database is used, but it would be easy to replace it with a production-ready database. 
+H2 database is used, but it is easily replaceable with a production-ready database. 
 
 Before going into details, please find a UML diagram of the main classes of this project.
 
 <img width="800" src="documentation/assets/uml.png">
 
-## MapPhoneBookingService
+## MapPhoneBookingServiceTests
 
 A very simple in-memory implementation of `PhoneBookingService` backed by a `ConcurrentHashMap`.
 
 - **Pros**: simple (easy to debug and test), lightweight (no external dependency needed, it's provided by the JDK !),
-thread safeness without any effort and while avoiding contention, fast (in-memory), easy to deploy
+thread safeness without any effort while avoiding contention, fast (in-memory), easy to deploy
 - **Cons**: **not scalable** as only one instance of the application could be deployed. If the service is restarted, stored
 information is lost (in-memory)
 
@@ -38,19 +38,20 @@ Tests can be found in `src/test/java`. Run `mvn test` to run them. There are 4 m
 
 ### Service 
 
-`APhoneBookServiceTests` is an abstract class that defines all tests to be run with all different implementations of
-`PhoneBookService`. `JpaPhoneBookServiceTests` extends `APhoneBookServiceTests` and uses an implementation of `PhoneBookService`
-that relies on a Spring Data JPA (Java Persistence API).
+`APhoneBookingServiceTests` is an abstract class that defines all tests to be run with all different implementations of
+`PhoneBookService`. 
+`JpAPhoneBookingServiceTests` extends `APhoneBookingServiceTests` to test  the `JpAPhoneBookingService` implementation.
+`MapPhoneBookingServiceTests` extends `APhoneBookingServiceTests` to test  the `MapPhoneBookingService` implementation.
 
 ### Controller
 
-The class `PhoneBookingControllerTests` contains test related to the REST API. It makes sure that the rest endpoints are 
+The class `PhoneBookingControllerTests` contains tests related to the REST API. It makes sure that the rest endpoints are 
 functional and can respond to http request coming from any http client. Moreover, it ensures proper HTTP status code 
 are returned to the client when a check exception is thrown (See the class `AppErrorHandler`) 
 
 The list of check exceptions is: `PhoneNotAvailableException`, `ReturnPhoneByIncorrectBorrowerException` and `UnknownDeviceException`. 
-There are mapped respectively to the following status code: `400`, `400` and `404`. A message is already returned in addition
-to the code.
+There are mapped respectively to the following status code: `400`, `400` and `404`. A message is also returned in addition
+to the status code to give more information about the issue.
 
 ## Coverage
 
@@ -83,12 +84,12 @@ Build the image on your computer, execute the following command in the root dire
 docker build -t phone-booking-app -f Dockerfile .
 ```
 
-Run it in a container, it will start automatically the server. Port 8080 of host is mapped to 8080 of container.
+Run it in a container, server is started automatically. Port 8080 of the host is mapped to port 8080 of the container.
 ```
 docker run -it -p 8080:8080 --name phone-booking-app phone-booking-app
 ```
 
-You can consume the REST API via host. See CURL section below. 
+REST API can be consumed by the host. See CURL section below. 
 
 ## CURL 
 
