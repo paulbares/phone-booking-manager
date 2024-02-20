@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>/Users/paul/Downloads/app/src/main/java/com/phone/manager/app</OriginalElement>
+  <nodes>
+    <node x="-203.80610500307125" y="582.5667128859399">com.phone.manager.app.domain.Phone</node>
+    <node x="-486.66666666666663" y="366.0">com.phone.manager.app.service.JpaPhoneBookingService</node>
+    <node x="-183.6472873923679" y="19.676744870841503">com.phone.manager.app.service.PhoneBookingService</node>
+    <node x="-497.66666666666663" y="19.676744870841503">com.phone.manager.app.spring.config.PhoneBookingServiceConfig</node>
+    <node x="188.37209188193083" y="582.56671288594">com.phone.manager.app.web.rest.PhoneDto</node>
+    <node x="-723.3555225615079" y="366.0">com.phone.manager.app.repository.PhoneRepository</node>
+    <node x="82.37209188193083" y="19.676744870841503">com.phone.manager.app.web.rest.PhoneBookingController</node>
+    <node x="-91.09549548430368" y="366.0">com.phone.manager.app.service.MapPhoneBookingService</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.phone.manager.app.service.MapPhoneBookingService" target="com.phone.manager.app.domain.Phone" relationship="TO_MANY">
+      <point x="81.0" y="-14.0" />
+      <point x="111.40450451569632" y="556.368807052603" />
+      <point x="-131.05610500307125" y="556.368807052603" />
+      <point x="24.25" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.web.rest.PhoneBookingController" target="com.phone.manager.app.service.PhoneBookingService" relationship="TO_ONE">
+      <point x="-57.25" y="-14.0" />
+      <point x="139.62209188193083" y="106.24113453412428" />
+      <point x="-24.6472873923679" y="106.24113453412428" />
+      <point x="53.0" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.web.rest.PhoneBookingController" target="com.phone.manager.app.web.rest.PhoneDto" relationship="CREATE">
+      <point x="57.25" y="-14.0" />
+      <point x="254.12209188193083" y="591.3468365525284" />
+      <point x="249.87209188193083" y="591.3468365525284" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.service.JpaPhoneBookingService" target="com.phone.manager.app.domain.Phone" relationship="CREATE">
+      <point x="0.0" y="-14.0" />
+      <point x="-367.66666666666663" y="596.56671288594" />
+      <point x="-347.0" y="596.56671288594" />
+      <point x="-347.0" y="596.5667128859399" />
+      <point x="-179.55610500307125" y="596.5667128859399" />
+      <point x="-24.25" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.service.JpaPhoneBookingService" target="com.phone.manager.app.repository.PhoneRepository" relationship="TO_ONE">
+      <point x="-79.33333333333334" y="-14.0" />
+      <point x="-447.0" y="340.0" />
+      <point x="-635.3555225615079" y="340.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.spring.config.PhoneBookingServiceConfig" target="com.phone.manager.app.service.JpaPhoneBookingService" relationship="CREATE">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.service.MapPhoneBookingService" target="com.phone.manager.app.service.PhoneBookingService" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="30.404504515696317" y="220.0" />
+      <point x="-130.6472873923679" y="220.0" />
+      <point x="-53.0" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.service.JpaPhoneBookingService" target="com.phone.manager.app.service.PhoneBookingService" relationship="REALIZATION">
+      <point x="79.33333333333334" y="-14.0" />
+      <point x="-288.33333333333326" y="220.0" />
+      <point x="-130.6472873923679" y="220.0" />
+      <point x="-53.0" y="14.0" />
+    </edge>
+    <edge source="com.phone.manager.app.service.MapPhoneBookingService" target="com.phone.manager.app.domain.Phone" relationship="CREATE">
+      <point x="-81.0" y="-14.0" />
+      <point x="-50.59549548430368" y="514.8633830488371" />
+      <point x="-179.55610500307125" y="514.8633830488371" />
+      <point x="-24.25" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.8183985085032398" showDependencies="true" x="-121.73873766063457" y="290.1061860427844" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
