@@ -155,4 +155,8 @@ curl -X POST http://localhost:8080/api/return -H "Content-Type: application/json
 ## Demo
 
 Here's a quick video to show the build of the image, the start of the container and few interactions with server via
-curl commands.
+curl commands (list all phones, book a phone as peter, try to book a phone as paul, return the phone as peter).
+
+https://github.com/paulbares/phone-booking-manager/assets/5783183/7edda6d2-0b7e-4b2e-beb0-3a242c67d50c
+
+
