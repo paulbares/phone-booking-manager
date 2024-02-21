@@ -24,7 +24,7 @@ public class JpaPhoneBookingService implements PhoneBookingService {
   private final PhoneRepository repository;
 
   /**
-   * Object that can give the current time. It is particularly useful for testing purpose.
+   * Object that gives the current time. It can be replaced by a "by hand increased" time abstraction in tests.
    */
   private final Supplier<Instant> timeSupplier;
 
